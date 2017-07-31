@@ -5,5 +5,19 @@ import java.util.List;
 
 public class TimeLogger {
 
-	List<WorkMonth> months = new ArrayList<>();
+	private List<WorkMonth> months = new ArrayList<>();
+
+	public List<WorkMonth> getMonths() {
+		return months;
+	}
+
+	private boolean isNewMonth(WorkMonth month) {
+		return !months.contains(month);
+	}
+
+	private void addMonth(WorkMonth month) {
+		if (isNewMonth(month)) {
+			months.add(month);
+		}
+	}
 }
