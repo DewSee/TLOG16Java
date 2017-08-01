@@ -18,6 +18,10 @@ public class Task {
 		this.comment = comment;
 	}
 
+	public Task(String taskId) {
+		this.taskId = taskId;
+	}
+
 	public Task(String taskId, String startTime, String endTime, String comment) {
 		String[] splitStartTime = startTime.split(":");
 		String[] splitEndTime = endTime.split(":");
@@ -43,15 +47,46 @@ public class Task {
 		return comment;
 	}
 
-	private long getMinPerTask() {
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
+	}
+
+	public void setStartTime(int startHour, int startMin) {
+		this.startTime = LocalTime.of(startHour, startMin);
+	}
+
+	public void setEndTime(int endHour, int endMin) {
+		this.endTime = LocalTime.of(endHour, endMin);
+	}
+
+	public void setStartTime(String startTime) {
+		String[] splitStartTime = startTime.split(":");
+		this.startTime = LocalTime.of(Integer.parseInt(splitStartTime[0]), Integer.parseInt(splitStartTime[1]));;
+	}
+
+	public void setEndTime(String endTime) {
+		String[] splitEndTime = endTime.split(":");
+		this.endTime = LocalTime.of(Integer.parseInt(splitEndTime[0]), Integer.parseInt(splitEndTime[1]));
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	protected long getMinPerTask() {
 		return Duration.between(startTime, endTime).get(ChronoUnit.MINUTES);
 	}
 
 	private boolean isValidTaskId() {
-		return ((taskId.startsWith("LT-") && taskId.substring(3).matches("[0-9]+")) || ((taskId.matches("[0-9]+") && taskId.length() == 4)));
+		return (isValidLtId() || isValidRedmineId());
 	}
 
-	protected boolean isMultipleQuarterHour() {
-		return getMinPerTask() % 15 == 0;
+	private boolean isValidRedmineId() {
+		return ((taskId.matches("[0-9]+") && taskId.length() == 4));
 	}
+
+	private boolean isValidLtId() {
+		return ((taskId.startsWith("LT-") && taskId.substring(3).matches("[0-9]+")));
+	}
+
 }

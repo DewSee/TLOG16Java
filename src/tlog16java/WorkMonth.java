@@ -1,7 +1,5 @@
 package tlog16java;
 
-import java.time.LocalTime;
-import java.time.Month;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,13 +43,13 @@ public class WorkMonth {
 	}
 
 	private void addWorkDay(WorkDay workDay, boolean isWeekendEnabled) {
-		if ((isWeekendEnabled || workDay.isWeekday()) && isNewDate(workDay) && isSameMonth(workDay)) {
+		if ((isWeekendEnabled || Util.isWeekday(workDay)) && isNewDate(workDay) && isSameMonth(workDay)) {
 			workDays.add(workDay);
 		}
 	}
 
 	private void addWorkDay(WorkDay workDay) {
-		if (workDay.isWeekday() && isNewDate(workDay) && isSameMonth(workDay)) {
+		if (Util.isWeekday(workDay) && isNewDate(workDay) && isSameMonth(workDay)) {
 			workDays.add(workDay);
 		}
 	}

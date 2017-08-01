@@ -1,9 +1,7 @@
 package tlog16java;
 
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class WorkDay {
@@ -48,6 +46,14 @@ public class WorkDay {
 		return sumPerDay;
 	}
 
+	public void setRequiredMinPerDay(long requiredMinPerDay) {
+		this.requiredMinPerDay = requiredMinPerDay;
+	}
+
+	public void setActualDay(int year, int month, int day) {
+		this.actualDay = LocalDate.of(year, month, day);
+	}
+
 	private long getExtraMinPerDay() {
 		return sumPerDay - requiredMinPerDay;
 	}
@@ -60,14 +66,10 @@ public class WorkDay {
 		return false;
 	}
 
-	private void addTask(Task t) {
-		if (t.isMultipleQuarterHour() && isSeparatedTime(t)) {
-			tasks.add(t);
+	private void addTask(Task task) {
+		if (Util.isMultipleQuarterHour(task) && isSeparatedTime(task)) {
+			tasks.add(task);
 		}
-	}
-
-	protected boolean isWeekday() {
-		return Calendar.DAY_OF_WEEK < 6;
 	}
 
 }
