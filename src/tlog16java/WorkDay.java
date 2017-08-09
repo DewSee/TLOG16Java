@@ -24,14 +24,18 @@ public class WorkDay {
 		this.actualDay = DEFAULT_ACTUAL_DAY;
 	}
 
-	public WorkDay(LocalDate actualDay) {
+	public WorkDay(int year, int month, int day) {
 		this.requiredMinPerDay = DEFAULT_MIN_PER_DAY;
-		this.actualDay = actualDay;
+		this.actualDay = LocalDate.of(year, month, day);
 	}
 
 	public WorkDay() {
 		this.requiredMinPerDay = DEFAULT_MIN_PER_DAY;
 		this.actualDay = DEFAULT_ACTUAL_DAY;
+	}
+
+	public List<Task> getTasks() {
+		return tasks;
 	}
 
 	public long getRequiredMinPerDay() {
@@ -70,6 +74,21 @@ public class WorkDay {
 		if (Util.isMultipleQuarterHour(task) && isSeparatedTime(task)) {
 			tasks.add(task);
 		}
+	}
+
+	protected Task getLastEndTime() {
+		Task latest = tasks.get(0);
+		for (Task task : tasks) {
+			if (latest.getEndTime().isAfter(task.getEndTime())) {
+				latest = task;
+			}
+		}
+		return latest;
+	}
+
+	@Override
+	public String toString() {
+		return "requiredMinPerDay: " + requiredMinPerDay + ", actualDay: " + actualDay + ", sumPerDay: " + sumPerDay;
 	}
 
 }

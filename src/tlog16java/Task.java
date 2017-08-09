@@ -55,13 +55,21 @@ public class Task {
 		this.startTime = LocalTime.of(startHour, startMin);
 	}
 
+	public void setStartTime(LocalTime startTime) {
+		this.startTime = startTime;
+	}
+
 	public void setEndTime(int endHour, int endMin) {
 		this.endTime = LocalTime.of(endHour, endMin);
 	}
 
+	public void setEndTime(LocalTime endTime) {
+		this.endTime = endTime;
+	}
+
 	public void setStartTime(String startTime) {
 		String[] splitStartTime = startTime.split(":");
-		this.startTime = LocalTime.of(Integer.parseInt(splitStartTime[0]), Integer.parseInt(splitStartTime[1]));;
+		this.startTime = LocalTime.of(Integer.parseInt(splitStartTime[0]), Integer.parseInt(splitStartTime[1]));
 	}
 
 	public void setEndTime(String endTime) {
@@ -77,7 +85,7 @@ public class Task {
 		return Duration.between(startTime, endTime).get(ChronoUnit.MINUTES);
 	}
 
-	private boolean isValidTaskId() {
+	protected boolean isValidTaskId() {
 		return (isValidLtId() || isValidRedmineId());
 	}
 
@@ -87,6 +95,11 @@ public class Task {
 
 	private boolean isValidLtId() {
 		return ((taskId.startsWith("LT-") && taskId.substring(3).matches("[0-9]+")));
+	}
+
+	@Override
+	public String toString() {
+		return "taskId=" + taskId + ", startTime=" + startTime + ", endTime=" + endTime + ", comment=" + comment;
 	}
 
 }

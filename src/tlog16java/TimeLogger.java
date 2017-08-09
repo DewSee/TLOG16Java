@@ -11,13 +11,16 @@ public class TimeLogger {
 		return months;
 	}
 
-	private boolean isNewMonth(WorkMonth month) {
+	protected boolean isNewMonth(WorkMonth month) {
 		return !months.contains(month);
 	}
 
-	private void addMonth(WorkMonth month) {
+	protected void addMonth(WorkMonth month) {
 		if (isNewMonth(month)) {
 			months.add(month);
+		} else {
+			System.out.println("This month is already added!");
 		}
 	}
+
 }

@@ -1,6 +1,8 @@
 package tlog16java;
 
 import java.util.Calendar;
+import java.util.List;
+import java.util.Scanner;
 
 public class Util {
 
@@ -28,4 +30,31 @@ public class Util {
 		}
 		return result;
 	}
+
+	public static void selectMonth(List<WorkMonth> months, WorkMonth selectedMonth, int monthNumber) {
+		for (int i = 0; i < months.size(); i++) {
+			if (months.get(i).getDate().getMonthValue() == monthNumber) {
+				selectedMonth = months.get(i);
+			}
+		}
+	}
+
+	public static void selectDay(List<WorkDay> days, WorkDay selectedDay, int dayNumber) {
+		for (int i = 0; i < days.size(); i++) {
+			if (days.get(i).getActualDay().getDayOfMonth() == dayNumber) {
+				selectedDay = days.get(i);
+			}
+		}
+	}
+
+	public static void selectTask(Task selectedTask, Scanner scanner, List<Task> tasks) {
+		String selectedId = scanner.nextLine();
+		for (Task task : tasks) {
+			if (task.getTaskid().equals(selectedId)) {
+				selectedTask = task;
+				break;
+			}
+		}
+	}
+
 }

@@ -12,13 +12,11 @@ public class WorkMonth {
 	private long sumPerMonth;
 	private long requiredMinPerMonth;
 
-	public WorkMonth(int year, int month, long sumPerMonth, long requiredMinPerMonth) {
+	public WorkMonth(int year, int month) {
 		this.date = YearMonth.of(year, month);
-		this.sumPerMonth = sumPerMonth;
-		this.requiredMinPerMonth = requiredMinPerMonth;
 	}
 
-	public List<WorkDay> getDays() {
+	public List<WorkDay> getWorkDays() {
 		return workDays;
 	}
 
@@ -38,6 +36,10 @@ public class WorkMonth {
 		return !workDays.contains(workDay);
 	}
 
+	protected long getExtraMintPerMonth() {
+		return getSumPerMonth() - getRequiredMinPerMonth();
+	}
+
 	private boolean isSameMonth(WorkDay workDay) {
 		return Calendar.MONTH + 1 == workDay.getActualDay().getMonthValue();
 	}
@@ -48,10 +50,9 @@ public class WorkMonth {
 		}
 	}
 
-	private void addWorkDay(WorkDay workDay) {
+	protected void addWorkDay(WorkDay workDay) {
 		if (Util.isWeekday(workDay) && isNewDate(workDay) && isSameMonth(workDay)) {
 			workDays.add(workDay);
 		}
 	}
-
 }
