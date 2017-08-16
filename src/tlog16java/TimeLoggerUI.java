@@ -2,6 +2,17 @@ package tlog16java;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import timelogger.exceptions.EmptyTimeFieldException;
+import timelogger.exceptions.FutureWorkDayException;
+import timelogger.exceptions.InvalidTaskIdException;
+import timelogger.exceptions.NegativeMinutesOfWorkException;
+import timelogger.exceptions.NoTaskIdException;
+import timelogger.exceptions.NotExpectedTimeOrderException;
+import timelogger.exceptions.NotNewDateException;
+import timelogger.exceptions.NotSameMonthException;
+import timelogger.exceptions.WeekendNotEnabledException;
 
 public class TimeLoggerUI {
 
@@ -128,19 +139,23 @@ public class TimeLoggerUI {
 	}
 
 	private static void addNewDayToMonth(List<WorkMonth> months) {
+
 		listMonths(months);
 		System.out.print("Month (1-12): ");
 		monthNumber = scanner.nextInt();
 		System.out.print("Day: (1-31): ");
 		dayNumber = scanner.nextInt();
 		System.out.print("Specify the amount of working hours (eg. 7,5): ");
-		double workingHours = scanner.nextDouble() * 60;
-		long workingMinutes = (long) workingHours;
+		double workingHours = scanner.nextDouble();
+		long workingMinutes = (long) (workingHours * 60);
 
 		Util.selectMonth(months, selectedMonth, monthNumber);
-
-		WorkDay newWorkDay = new WorkDay(workingMinutes, selectedMonth.getDate().getYear(), selectedMonth.getDate().getMonthValue(), dayNumber);
-		selectedMonth.addWorkDay(newWorkDay);
+		try {
+			WorkDay newWorkDay = new WorkDay(workingMinutes, selectedMonth.getDate().getYear(), selectedMonth.getDate().getMonthValue(), dayNumber);
+			selectedMonth.addWorkDay(newWorkDay);
+		} catch (NegativeMinutesOfWorkException | FutureWorkDayException | WeekendNotEnabledException | NotNewDateException | NotSameMonthException ex) {
+			Logger.getLogger(TimeLoggerUI.class.getName()).log(Level.SEVERE, null, ex);
+		}
 	}
 
 	private static void startNewTask(List<WorkMonth> months) {
@@ -154,7 +169,16 @@ public class TimeLoggerUI {
 
 		System.out.print("Task ID: ");
 		String taskId = scanner.nextLine();
-		Task task = new Task(taskId);
+		Task task = null;
+		try {
+			task = new Task(taskId);
+		} catch (NoTaskIdException ex) {
+			Logger.getLogger(TimeLoggerUI.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (InvalidTaskIdException ex) {
+			Logger.getLogger(TimeLoggerUI.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (EmptyTimeFieldException ex) {
+			Logger.getLogger(TimeLoggerUI.class.getName()).log(Level.SEVERE, null, ex);
+		}
 
 		System.out.print("Description: ");
 		task.setComment(scanner.nextLine());
@@ -163,12 +187,22 @@ public class TimeLoggerUI {
 		System.out.print("Start time (HH:MM): ");
 		String startTime = scanner.nextLine();
 
-		if (startTime.equals("")) {
-			task.setStartTime(selectedDay.getLastEndTime().toString());
-		} else {
-			task.setStartTime(startTime);
+		try {
+			if (startTime.equals("")) {
+				task.setStartTime(selectedDay.getLastEndTime().toString());
+			} else {
+
+				task.setStartTime(startTime);
+			}
+		} catch (NotExpectedTimeOrderException | EmptyTimeFieldException ex) {
+			Logger.getLogger(TimeLoggerUI.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		task.setEndTime("");
+
+		try {
+			task.setEndTime(startTime);
+		} catch (NotExpectedTimeOrderException | EmptyTimeFieldException ex) {
+			Logger.getLogger(TimeLoggerUI.class.getName()).log(Level.SEVERE, null, ex);
+		}
 
 		if (task.isValidTaskId()) {
 			selectedDay.getTasks().add(task);
@@ -190,7 +224,11 @@ public class TimeLoggerUI {
 				System.out.println(task);
 				System.out.print("Set end time for this task (HH:MM): ");
 				String endTime = scanner.nextLine();
-				task.setEndTime(endTime);
+				try {
+					task.setEndTime(endTime);
+				} catch (NotExpectedTimeOrderException | EmptyTimeFieldException ex) {
+					Logger.getLogger(TimeLoggerUI.class.getName()).log(Level.SEVERE, null, ex);
+				}
 
 			}
 		}
@@ -243,19 +281,31 @@ public class TimeLoggerUI {
 
 		System.out.print("ID (current: " + selectedTask.getTaskid() + " ): ");
 		String taskID = scanner.nextLine();
-		selectedTask.setStartTime(taskID);
+		try {
+			selectedTask.setTaskId(taskID);
+		} catch (InvalidTaskIdException | NoTaskIdException ex) {
+			Logger.getLogger(TimeLoggerUI.class.getName()).log(Level.SEVERE, null, ex);
+		}
 
 		System.out.print("Start time (current: " + selectedTask.getStartTime() + " ): ");
 		String startTime = scanner.nextLine();
-		selectedTask.setStartTime(startTime);
+		try {
+			selectedTask.setStartTime(startTime);
+		} catch (NotExpectedTimeOrderException | EmptyTimeFieldException ex) {
+			Logger.getLogger(TimeLoggerUI.class.getName()).log(Level.SEVERE, null, ex);
+		}
 
 		System.out.print("End time (current: " + selectedTask.getEndTime() + " ): ");
 		String endTime = scanner.nextLine();
-		selectedTask.setStartTime(endTime);
+		try {
+			selectedTask.setEndTime(endTime);
+		} catch (NotExpectedTimeOrderException | EmptyTimeFieldException ex) {
+			Logger.getLogger(TimeLoggerUI.class.getName()).log(Level.SEVERE, null, ex);
+		}
 
 		System.out.print("Description (current: " + selectedTask.getComment() + " ): ");
 		String comment = scanner.nextLine();
-		selectedTask.setStartTime(comment);
+		selectedTask.setComment(comment);
 	}
 
 	private static void showStatistics(List<WorkMonth> months) {

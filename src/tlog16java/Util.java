@@ -3,6 +3,10 @@ package tlog16java;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import timelogger.exceptions.EmptyTimeFieldException;
+import timelogger.exceptions.NotExpectedTimeOrderException;
 
 public class Util {
 
@@ -16,19 +20,27 @@ public class Util {
 		return workDay.getActualDay().getDayOfWeek().getValue() < Calendar.SATURDAY;
 	}
 
-	public static long roundTtoMultipleQuarterHour(Task task) {
+	public static void roundToMultipleQuarterHour(Task task) {
 		int halfQuarter = 7;
 		long result = 0;
 
 		if (!isMultipleQuarterHour(task)) {
 			long remainder = task.getMinPerTask() % quarter;
 			if (remainder <= halfQuarter) {
-				result = task.getMinPerTask() - remainder;
+				try {
+					task.setEndTime(task.getEndTime().minusMinutes(remainder));
+				} catch (NotExpectedTimeOrderException | EmptyTimeFieldException ex) {
+					Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+				}
 			} else {
-				result = task.getMinPerTask() + (quarter - remainder);
+				try {
+					task.setEndTime(task.getEndTime().plusMinutes(quarter - remainder));
+				} catch (NotExpectedTimeOrderException | EmptyTimeFieldException ex) {
+					Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+				}
 			}
 		}
-		return result;
+
 	}
 
 	public static void selectMonth(List<WorkMonth> months, WorkMonth selectedMonth, int monthNumber) {
@@ -55,6 +67,7 @@ public class Util {
 				break;
 			}
 		}
+
 	}
 
 }

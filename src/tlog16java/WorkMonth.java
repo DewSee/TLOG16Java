@@ -2,8 +2,10 @@ package tlog16java;
 
 import java.time.YearMonth;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
+import timelogger.exceptions.WeekendNotEnabledException;
+import timelogger.exceptions.NotNewDateException;
+import timelogger.exceptions.NotSameMonthException;
 
 public class WorkMonth {
 
@@ -25,15 +27,15 @@ public class WorkMonth {
 	}
 
 	public long getSumPerMonth() {
-		return sumPerMonth;
+		return getWorkDays().stream().mapToLong(o -> o.getSumPerDay()).sum();
 	}
 
 	public long getRequiredMinPerMonth() {
-		return requiredMinPerMonth;
+		return getWorkDays().stream().mapToLong(o -> o.getRequiredMinPerDay()).sum();
 	}
 
-	private boolean isNewDate(WorkDay workDay) {
-		return !workDays.contains(workDay);
+	protected boolean isNewDate(WorkDay workDay) {
+		return workDays.stream().noneMatch(o -> o.getActualDay().equals(workDay.getActualDay()));
 	}
 
 	protected long getExtraMintPerMonth() {
@@ -41,18 +43,30 @@ public class WorkMonth {
 	}
 
 	private boolean isSameMonth(WorkDay workDay) {
-		return Calendar.MONTH + 1 == workDay.getActualDay().getMonthValue();
+		return this.date.getMonthValue() == workDay.getActualDay().getMonthValue();
 	}
 
-	private void addWorkDay(WorkDay workDay, boolean isWeekendEnabled) {
+	protected void addWorkDay(WorkDay workDay, boolean isWeekendEnabled) throws WeekendNotEnabledException, NotNewDateException, NotSameMonthException {
 		if ((isWeekendEnabled || Util.isWeekday(workDay)) && isNewDate(workDay) && isSameMonth(workDay)) {
 			workDays.add(workDay);
+		} else if (!isSameMonth(workDay)) {
+			throw new NotSameMonthException("The given day's month does not match!");
+		} else if (!isNewDate(workDay)) {
+			throw new NotNewDateException("Date already exists!");
+		} else if (!isWeekendEnabled && !Util.isWeekday(workDay)) {
+			throw new WeekendNotEnabledException("Can't add a weekend!");
 		}
 	}
 
-	protected void addWorkDay(WorkDay workDay) {
+	protected void addWorkDay(WorkDay workDay) throws WeekendNotEnabledException, NotNewDateException, NotSameMonthException {
 		if (Util.isWeekday(workDay) && isNewDate(workDay) && isSameMonth(workDay)) {
 			workDays.add(workDay);
+		} else if (!isSameMonth(workDay)) {
+			throw new NotSameMonthException("The given day's month does not match! (" + workDay.getActualDay().getMonth() + "/" + this.getDate().getMonth() + ")");
+		} else if (!isNewDate(workDay)) {
+			throw new NotNewDateException("Date already exists!");
+		} else if (!Util.isWeekday(workDay)) {
+			throw new WeekendNotEnabledException("Can't add a weekend!");
 		}
 	}
 }
