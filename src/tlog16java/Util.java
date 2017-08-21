@@ -21,10 +21,9 @@ public class Util {
 	}
 
 	public static void roundToMultipleQuarterHour(Task task) {
-		int halfQuarter = 7;
-		long result = 0;
-
 		if (!isMultipleQuarterHour(task)) {
+			int halfQuarter = 7;
+
 			long remainder = task.getMinPerTask() % quarter;
 			if (remainder <= halfQuarter) {
 				try {
@@ -41,6 +40,17 @@ public class Util {
 			}
 		}
 
+	}
+
+	public static boolean isSeparatedTime(Task task, List<Task> tasks) {
+		for (Task existingTask : tasks) {
+			if ((task.getStartTime().isAfter(existingTask.getStartTime()) && task.getStartTime().isBefore(existingTask.getEndTime()))
+			|| (task.getEndTime().isAfter(existingTask.getStartTime()) && task.getEndTime().isBefore(existingTask.getEndTime()))
+			|| (task.getStartTime().isBefore(existingTask.getStartTime()) && task.getEndTime().isAfter(existingTask.getEndTime()))) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public static void selectMonth(List<WorkMonth> months, WorkMonth selectedMonth, int monthNumber) {

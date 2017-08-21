@@ -2,7 +2,6 @@ package tlog16java;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
-import timelogger.exceptions.NotNewDateException;
 import timelogger.exceptions.NotNewMonthException;
 
 public class TimeLoggerTest {

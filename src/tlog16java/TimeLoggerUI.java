@@ -11,6 +11,7 @@ import timelogger.exceptions.NegativeMinutesOfWorkException;
 import timelogger.exceptions.NoTaskIdException;
 import timelogger.exceptions.NotExpectedTimeOrderException;
 import timelogger.exceptions.NotNewDateException;
+import timelogger.exceptions.NotNewMonthException;
 import timelogger.exceptions.NotSameMonthException;
 import timelogger.exceptions.WeekendNotEnabledException;
 
@@ -134,7 +135,11 @@ public class TimeLoggerUI {
 		monthNumber = scanner.nextInt();
 
 		WorkMonth newMonth = new WorkMonth(yearNumber, monthNumber);
-		timeLogger.addMonth(newMonth);
+		try {
+			timeLogger.addMonth(newMonth);
+		} catch (NotNewMonthException ex) {
+			Logger.getLogger(TimeLoggerUI.class.getName()).log(Level.SEVERE, null, ex);
+		}
 
 	}
 

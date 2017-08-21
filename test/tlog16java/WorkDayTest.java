@@ -10,7 +10,6 @@ import java.time.LocalTime;
 import java.time.Month;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import timelogger.exceptions.EmptyTimeFieldException;
 import timelogger.exceptions.FutureWorkDayException;
 import timelogger.exceptions.NegativeMinutesOfWorkException;
 import timelogger.exceptions.NotSeparatedTimeException;

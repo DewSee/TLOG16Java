@@ -85,21 +85,11 @@ public class WorkDay {
 		return getSumPerDay() - getRequiredMinPerDay();
 	}
 
-	protected boolean isSeparatedTime(Task task) {
-		for (Task existingTask : tasks) {
-			if ((existingTask.getStartTime().isAfter(task.getStartTime()) && existingTask.getStartTime().isBefore(task.getEndTime()))
-			|| (existingTask.getEndTime().isAfter(task.getStartTime()) && existingTask.getEndTime().isBefore(task.getEndTime()))) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	protected void addTask(Task task) throws NotSeparatedTimeException {
-		if (Util.isMultipleQuarterHour(task) && isSeparatedTime(task)) {
+		if (Util.isMultipleQuarterHour(task) && Util.isSeparatedTime(task, getTasks())) {
 			tasks.add(task);
 		}
-		if (!isSeparatedTime(task)) {
+		if (!Util.isSeparatedTime(task, getTasks())) {
 			throw new NotSeparatedTimeException("Tasks' times are overlapping!");
 		}
 	}
