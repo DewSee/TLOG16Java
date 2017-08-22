@@ -6,10 +6,13 @@ import java.util.List;
 import timelogger.exceptions.WeekendNotEnabledException;
 import timelogger.exceptions.NotNewDateException;
 import timelogger.exceptions.NotSameMonthException;
+import lombok.Getter;
 
 public class WorkMonth {
 
+	@Getter
 	private List<WorkDay> workDays = new ArrayList<>();
+	@Getter
 	private YearMonth date;
 	private long sumPerMonth;
 	private long requiredMinPerMonth;
@@ -18,20 +21,12 @@ public class WorkMonth {
 		this.date = YearMonth.of(year, month);
 	}
 
-	public List<WorkDay> getWorkDays() {
-		return workDays;
-	}
-
-	public YearMonth getDate() {
-		return date;
-	}
-
 	public long getSumPerMonth() {
-		return getWorkDays().stream().mapToLong(o -> o.getSumPerDay()).sum();
+		return workDays.stream().mapToLong(o -> o.getSumPerDay()).sum();
 	}
 
 	public long getRequiredMinPerMonth() {
-		return getWorkDays().stream().mapToLong(o -> o.getRequiredMinPerDay()).sum();
+		return workDays.stream().mapToLong(o -> o.getRequiredMinPerDay()).sum();
 	}
 
 	protected boolean isNewDate(WorkDay workDay) {
@@ -62,7 +57,7 @@ public class WorkMonth {
 		if (Util.isWeekday(workDay) && isNewDate(workDay) && isSameMonth(workDay)) {
 			workDays.add(workDay);
 		} else if (!isSameMonth(workDay)) {
-			throw new NotSameMonthException("The given day's month does not match! (" + workDay.getActualDay().getMonth() + "/" + this.getDate().getMonth() + ")");
+			throw new NotSameMonthException("The given day's month does not match! (" + workDay.getActualDay().getMonth() + "/" + this.date.getMonth() + ")");
 		} else if (!isNewDate(workDay)) {
 			throw new NotNewDateException("Date already exists!");
 		} else if (!Util.isWeekday(workDay)) {

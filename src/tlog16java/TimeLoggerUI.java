@@ -108,9 +108,9 @@ public class TimeLoggerUI {
 		scanner = new Scanner(System.in);
 		monthNumber = scanner.nextInt();
 
-		WorkMonth actualWorkMonth = months.get(monthNumber);
+		selectedMonth = Util.selectMonth(months, selectedMonth, monthNumber);
 
-		for (WorkDay day : actualWorkMonth.getWorkDays()) {
+		for (WorkDay day : selectedMonth.getWorkDays()) {
 			System.out.println(day.getActualDay().getDayOfMonth() + ". " + day.getActualDay().getDayOfWeek());
 		}
 	}
@@ -121,9 +121,9 @@ public class TimeLoggerUI {
 		System.out.println("Choose one from the listed days (1-31): ");
 		dayNumber = scanner.nextInt();
 
-		WorkDay actualWorkDay = months.get(monthNumber).getWorkDays().get(dayNumber);
+		selectedDay = Util.selectDay(selectedMonth.getWorkDays(), selectedDay, dayNumber);
 
-		for (Task task : actualWorkDay.getTasks()) {
+		for (Task task : selectedDay.getTasks()) {
 			System.out.println(task);
 		}
 	}
@@ -154,7 +154,8 @@ public class TimeLoggerUI {
 		double workingHours = scanner.nextDouble();
 		long workingMinutes = (long) (workingHours * 60);
 
-		Util.selectMonth(months, selectedMonth, monthNumber);
+		selectedMonth = Util.selectMonth(months, selectedMonth, monthNumber);
+
 		try {
 			WorkDay newWorkDay = new WorkDay(workingMinutes, selectedMonth.getDate().getYear(), selectedMonth.getDate().getMonthValue(), dayNumber);
 			selectedMonth.addWorkDay(newWorkDay);
@@ -169,19 +170,15 @@ public class TimeLoggerUI {
 		System.out.print("Day (1-31): ");
 		dayNumber = scanner.nextInt();
 
-		Util.selectMonth(months, selectedMonth, monthNumber);
-		Util.selectDay(selectedMonth.getWorkDays(), selectedDay, dayNumber);
+		selectedMonth = Util.selectMonth(months, selectedMonth, monthNumber);
+		selectedDay = Util.selectDay(selectedMonth.getWorkDays(), selectedDay, dayNumber);
 
 		System.out.print("Task ID: ");
 		String taskId = scanner.nextLine();
 		Task task = null;
 		try {
-			task = new Task(taskId);
-		} catch (NoTaskIdException ex) {
-			Logger.getLogger(TimeLoggerUI.class.getName()).log(Level.SEVERE, null, ex);
-		} catch (InvalidTaskIdException ex) {
-			Logger.getLogger(TimeLoggerUI.class.getName()).log(Level.SEVERE, null, ex);
-		} catch (EmptyTimeFieldException ex) {
+			task.setTaskId(taskId);
+		} catch (NoTaskIdException | InvalidTaskIdException ex) {
 			Logger.getLogger(TimeLoggerUI.class.getName()).log(Level.SEVERE, null, ex);
 		}
 
@@ -245,19 +242,19 @@ public class TimeLoggerUI {
 		System.out.print("Day: ");
 		dayNumber = scanner.nextInt();
 
-		Util.selectMonth(months, selectedMonth, monthNumber);
-		Util.selectDay(selectedMonth.getWorkDays(), selectedDay, dayNumber);
+		selectedMonth = Util.selectMonth(months, selectedMonth, monthNumber);
+		selectedDay = Util.selectDay(selectedMonth.getWorkDays(), selectedDay, dayNumber);
 
 		System.out.print("Select the task's ID you want to delete: ");
-		Util.selectTask(selectedTask, scanner, selectedDay.getTasks());
+		selectedTask = Util.selectTask(selectedTask, scanner, selectedDay.getTasks());
 
-		System.out.println("Are you sure, you want to delete " + selectedTask.getTaskid() + "? (y/n)");
+		System.out.println("Are you sure, you want to delete " + selectedTask.getTaskId() + "? (y/n)");
 		String yesOrNo = scanner.next();
 		do {
 			switch (yesOrNo) {
 				case "y":
 					selectedDay.getTasks().remove(selectedTask);
-					System.out.println("Task" + selectedTask.getTaskid() + " deleted");
+					System.out.println("Task" + selectedTask.getTaskId() + " deleted");
 					break;
 				case "n":
 					System.out.println("Deletion cancelled.");
@@ -276,15 +273,15 @@ public class TimeLoggerUI {
 		System.out.print("Day: ");
 		dayNumber = scanner.nextInt();
 
-		Util.selectMonth(months, selectedMonth, monthNumber);
-		Util.selectDay(selectedMonth.getWorkDays(), selectedDay, dayNumber);
+		selectedMonth = Util.selectMonth(months, selectedMonth, monthNumber);
+		selectedDay = Util.selectDay(selectedMonth.getWorkDays(), selectedDay, dayNumber);
 
 		System.out.print("Select the task's ID you want to modify: ");
 		Util.selectTask(selectedTask, scanner, selectedDay.getTasks());
 
 		System.out.println("If you don't want to change a value, leave it empty!");
 
-		System.out.print("ID (current: " + selectedTask.getTaskid() + " ): ");
+		System.out.print("ID (current: " + selectedTask.getTaskId() + " ): ");
 		String taskID = scanner.nextLine();
 		try {
 			selectedTask.setTaskId(taskID);

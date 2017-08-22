@@ -53,30 +53,33 @@ public class Util {
 		return true;
 	}
 
-	public static void selectMonth(List<WorkMonth> months, WorkMonth selectedMonth, int monthNumber) {
+	public static WorkMonth selectMonth(List<WorkMonth> months, WorkMonth selectedMonth, int monthNumber) {
 		for (int i = 0; i < months.size(); i++) {
 			if (months.get(i).getDate().getMonthValue() == monthNumber) {
 				selectedMonth = months.get(i);
 			}
 		}
+		return selectedMonth;
 	}
 
-	public static void selectDay(List<WorkDay> days, WorkDay selectedDay, int dayNumber) {
+	public static WorkDay selectDay(List<WorkDay> days, WorkDay selectedDay, int dayNumber) {
 		for (int i = 0; i < days.size(); i++) {
 			if (days.get(i).getActualDay().getDayOfMonth() == dayNumber) {
 				selectedDay = days.get(i);
 			}
 		}
+		return selectedDay;
 	}
 
-	public static void selectTask(Task selectedTask, Scanner scanner, List<Task> tasks) {
+	public static Task selectTask(Task selectedTask, Scanner scanner, List<Task> tasks) {
 		String selectedId = scanner.nextLine();
 		for (Task task : tasks) {
-			if (task.getTaskid().equals(selectedId)) {
+			if (task.getTaskId().equals(selectedId)) {
 				selectedTask = task;
 				break;
 			}
 		}
+		return selectedTask;
 
 	}
 

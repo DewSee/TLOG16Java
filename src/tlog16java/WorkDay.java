@@ -8,12 +8,17 @@ import java.util.List;
 import timelogger.exceptions.NegativeMinutesOfWorkException;
 import timelogger.exceptions.FutureWorkDayException;
 import timelogger.exceptions.NotSeparatedTimeException;
+import lombok.Getter;
 
 public class WorkDay {
 
+	@Getter
 	private List<Task> tasks = new ArrayList<>();
+	@Getter
 	private long requiredMinPerDay;
+	@Getter
 	private LocalDate actualDay;
+
 	private long sumPerDay;
 
 	private long DEFAULT_MIN_PER_DAY = 450;
@@ -51,20 +56,8 @@ public class WorkDay {
 		this.actualDay = DEFAULT_ACTUAL_DAY;
 	}
 
-	public List<Task> getTasks() {
-		return tasks;
-	}
-
-	public long getRequiredMinPerDay() {
-		return requiredMinPerDay;
-	}
-
-	public LocalDate getActualDay() {
-		return actualDay;
-	}
-
 	public long getSumPerDay() {
-		return getTasks().stream().mapToLong(o -> o.getMinPerTask()).sum();
+		return tasks.stream().mapToLong(o -> o.getMinPerTask()).sum();
 	}
 
 	public void setRequiredMinPerDay(long requiredMinPerDay) throws NegativeMinutesOfWorkException {
@@ -82,14 +75,14 @@ public class WorkDay {
 	}
 
 	protected long getExtraMinPerDay() {
-		return getSumPerDay() - getRequiredMinPerDay();
+		return getSumPerDay() - requiredMinPerDay;
 	}
 
 	protected void addTask(Task task) throws NotSeparatedTimeException {
-		if (Util.isMultipleQuarterHour(task) && Util.isSeparatedTime(task, getTasks())) {
+		if (Util.isMultipleQuarterHour(task) && Util.isSeparatedTime(task, tasks)) {
 			tasks.add(task);
 		}
-		if (!Util.isSeparatedTime(task, getTasks())) {
+		if (!Util.isSeparatedTime(task, tasks)) {
 			throw new NotSeparatedTimeException("Tasks' times are overlapping!");
 		}
 	}

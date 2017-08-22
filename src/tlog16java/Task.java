@@ -6,12 +6,16 @@ import timelogger.exceptions.InvalidTaskIdException;
 import timelogger.exceptions.NotExpectedTimeOrderException;
 import timelogger.exceptions.NoTaskIdException;
 import timelogger.exceptions.EmptyTimeFieldException;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public class Task {
 
 	private String taskId;
 	private LocalTime startTime;
 	private LocalTime endTime;
+	@Setter
 	private String comment;
 
 	public Task(String taskid, int startHour, int startMin, int endHour, int endMin, String comment) throws NotExpectedTimeOrderException, InvalidTaskIdException, NoTaskIdException, EmptyTimeFieldException {
@@ -71,22 +75,6 @@ public class Task {
 		if (!this.isValidTaskId()) {
 			throw new InvalidTaskIdException("Invalid Task ID!");
 		}
-	}
-
-	public String getTaskid() {
-		return taskId;
-	}
-
-	public LocalTime getStartTime() {
-		return startTime;
-	}
-
-	public LocalTime getEndTime() {
-		return endTime;
-	}
-
-	public String getComment() {
-		return comment;
 	}
 
 	public void setTaskId(String taskId) throws InvalidTaskIdException, NoTaskIdException {
@@ -163,10 +151,6 @@ public class Task {
 		if (this.endTime.isBefore(this.startTime)) {
 			throw new NotExpectedTimeOrderException("End Time must be after Start Time!");
 		}
-	}
-
-	public void setComment(String comment) {
-		this.comment = comment;
 	}
 
 	protected long getMinPerTask() {

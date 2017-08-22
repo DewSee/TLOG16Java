@@ -3,14 +3,12 @@ package tlog16java;
 import java.util.ArrayList;
 import java.util.List;
 import timelogger.exceptions.NotNewMonthException;
+import lombok.Getter;
 
+@Getter
 public class TimeLogger {
 
 	private List<WorkMonth> months = new ArrayList<>();
-
-	public List<WorkMonth> getMonths() {
-		return months;
-	}
 
 	protected boolean isNewMonth(WorkMonth month) {
 		return months.stream().noneMatch(o -> o.getDate().equals(month.getDate()));
