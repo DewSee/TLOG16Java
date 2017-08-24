@@ -22,6 +22,7 @@ public class TimeLoggerUI {
 	private static int yearNumber;
 	private static int monthNumber;
 	private static int dayNumber;
+	private static String selectedId;
 
 	private static WorkMonth selectedMonth;
 	private static WorkDay selectedDay;
@@ -63,9 +64,12 @@ public class TimeLoggerUI {
 				listMonths(timeLogger.getMonths());
 				break;
 			case 2:
+				listMonths(timeLogger.getMonths());
 				listDaysOfMonth(timeLogger.getMonths());
 				break;
 			case 3:
+				listMonths(timeLogger.getMonths());
+				listDaysOfMonth(timeLogger.getMonths());
 				listTasksOfDay(timeLogger.getMonths());
 				break;
 			case 4:
@@ -97,15 +101,13 @@ public class TimeLoggerUI {
 
 	private static void listMonths(List<WorkMonth> months) {
 		for (int i = 0; i < months.size(); i++) {
-			System.out.println(months.get(i).getDate().getMonthValue() + ". " + months.get(i).getDate().getMonth());
+			System.out.println(months.get(i).getDate().getMonthValue() + ". " + months.get(i).getDate().getMonth() + ", " + months.get(i).getDate().getYear());
 		}
 	}
 
 	private static void listDaysOfMonth(List<WorkMonth> months) {
-		listMonths(months);
 
 		System.out.print("Choose one from the listed months (1-12): ");
-		scanner = new Scanner(System.in);
 		monthNumber = scanner.nextInt();
 
 		selectedMonth = Util.selectMonth(months, selectedMonth, monthNumber);
@@ -116,7 +118,6 @@ public class TimeLoggerUI {
 	}
 
 	private static void listTasksOfDay(List<WorkMonth> months) {
-		listDaysOfMonth(months);
 
 		System.out.println("Choose one from the listed days (1-31): ");
 		dayNumber = scanner.nextInt();
@@ -165,6 +166,7 @@ public class TimeLoggerUI {
 	}
 
 	private static void startNewTask(List<WorkMonth> months) {
+
 		System.out.print("Month (1-12): ");
 		monthNumber = scanner.nextInt();
 		System.out.print("Day (1-31): ");
@@ -246,7 +248,8 @@ public class TimeLoggerUI {
 		selectedDay = Util.selectDay(selectedMonth.getWorkDays(), selectedDay, dayNumber);
 
 		System.out.print("Select the task's ID you want to delete: ");
-		selectedTask = Util.selectTask(selectedTask, scanner, selectedDay.getTasks());
+		selectedId = scanner.nextLine();
+		selectedTask = Util.selectTask(selectedTask, selectedId, selectedDay.getTasks());
 
 		System.out.println("Are you sure, you want to delete " + selectedTask.getTaskId() + "? (y/n)");
 		String yesOrNo = scanner.next();
@@ -277,7 +280,8 @@ public class TimeLoggerUI {
 		selectedDay = Util.selectDay(selectedMonth.getWorkDays(), selectedDay, dayNumber);
 
 		System.out.print("Select the task's ID you want to modify: ");
-		Util.selectTask(selectedTask, scanner, selectedDay.getTasks());
+		selectedId = scanner.nextLine();
+		Util.selectTask(selectedTask, selectedId, selectedDay.getTasks());
 
 		System.out.println("If you don't want to change a value, leave it empty!");
 

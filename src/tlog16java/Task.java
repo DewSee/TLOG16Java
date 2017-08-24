@@ -18,6 +18,14 @@ public class Task {
 	@Setter
 	private String comment;
 
+	/**
+	 * startTime and endTime are made from an hour and minute integer.
+	 *
+	 * @throws NotExpectedTimeOrderException
+	 * @throws InvalidTaskIdException
+	 * @throws NoTaskIdException
+	 * @throws EmptyTimeFieldException
+	 */
 	public Task(String taskid, int startHour, int startMin, int endHour, int endMin, String comment) throws NotExpectedTimeOrderException, InvalidTaskIdException, NoTaskIdException, EmptyTimeFieldException {
 		this.taskId = taskid;
 		this.startTime = LocalTime.of(startHour, startMin);
@@ -53,6 +61,14 @@ public class Task {
 		}
 	}
 
+	/**
+	 * startTime and endTime are made from strings splitted at the colon (HH:MM)
+	 *
+	 * @throws NotExpectedTimeOrderException
+	 * @throws InvalidTaskIdException
+	 * @throws NoTaskIdException
+	 * @throws EmptyTimeFieldException
+	 */
 	public Task(String taskId, String startTime, String endTime, String comment) throws NotExpectedTimeOrderException, InvalidTaskIdException, NoTaskIdException, EmptyTimeFieldException {
 		String[] splitStartTime = startTime.split(":");
 		String[] splitEndTime = endTime.split(":");
